@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Smart Resume Builder</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* CSS for Hero Section */
+    .hero-section {
+        min-height: calc(100vh - 80px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 2rem;
+    }
+    .hero-headline {
+        font-size: clamp(2rem, 5vw, 4rem);
+        font-weight: 800;
+        background: linear-gradient(45deg, #e0e7ff, #818cf8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 10px rgba(129, 140, 248, 0.5);
+    }
+    .hero-subheading {
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        opacity: 0.8;
+        max-width: 600px;
+        margin: 1rem auto 2rem;
+    }
+    .hero-cta-button {
+        font-size: 1.125rem;
+        padding: 1rem 2rem;
+        border-radius: 9999px;
+        background: linear-gradient(45deg, #3b82f6, #63b1f1);
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .hero-cta-button:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+    }
+    
+    /* CSS for Features & Testimonials */
+    .section-heading {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+        font-weight: 700;
+    }
+    .features-section {
+        padding: 6rem 2rem;
+        background-color: rgba(31, 41, 55, 0.3);
+    }
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+    .feature-card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 1rem;
+        padding: 2.5rem;
+        text-align: center;
+        box-shadow: var(--shadow-dark);
+        transition: transform 0.3s;
+    }
+    .feature-card:hover {
+        transform: translateY(-10px);
+    }
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+    .feature-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .testimonials-section {
+        padding: 6rem 2rem;
+    }
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+    .testimonial-card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: var(--shadow-dark);
+        font-style: italic;
+        position: relative;
+    }
+    .testimonial-card p {
+        font-size: 1rem;
+        line-height: 1.8;
+    }
+    .author {
+        margin-top: 1.5rem;
+        font-style: normal;
+        font-weight: 600;
+        color: var(--text-color-accent);
+    }
+  </style>
+</head>
+<body class="main-page">
+  <header class="navbar">
+    <a href="/" class="logo">Smart Resume Builder</a>
+    <nav>
+      <a href="/resume/create">Create New</a>
+      <a href="/dashboard">My Resumes</a>
+      <a href="/auth/logout">Logout</a>
+    </nav>
+  </header>
+
+  <section class="hero-section">
+      <div class="hero-content">
+          <h1 class="hero-headline">Create Resumes that Get You Hired 🚀</h1>
+          <p class="hero-subheading">Choose from professional templates, customize easily, and download instantly.</p>
+          <a href="/resume/create" class="hero-cta-button">Get Started</a>
+      </div>
+  </section>
+
+  <section class="features-section">
+      <h2 class="section-heading">Why Choose Our Resume Builder?</h2>
+      <div class="features-grid">
+          <div class="feature-card">
+              <div class="feature-icon">✨</div>
+              <h3 class="feature-title">Sleek, Modern Templates</h3>
+              <p>Impress recruiters with a professionally designed, visually stunning resume. [Image of professional resume templates]</p>
+          </div>
+          <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h3 class="feature-title">Blazing Fast Generation</h3>
+              <p>Save time with our fast and intuitive builder. Create a resume in just minutes.</p>
+          </div>
+          <div class="feature-card">
+              <div class="feature-icon">🔒</div>
+              <h3 class="feature-title">Secure & Private</h3>
+              <p>Your data is protected with end-to-end encryption. Your privacy is our top priority.</p>
+          </div>
+      </div>
+  </section>
+
+  <section class="testimonials-section">
+      <h2 class="section-heading">Hear What Our Users Say</h2>
+      <div class="testimonials-grid">
+          <div class="testimonial-card">
+              <p>"Using this builder was a game-changer! Landed an interview within a week of updating my resume."</p>
+              <div class="author">- Jane Doe, Senior Designer</div>
+          </div>
+          <div class="testimonial-card">
+              <p>"The templates are incredible. So clean and professional. The PDF download is perfect every time."</p>
+              <div class="author">- John Smith, Software Engineer</div>
+          </div>
+      </div>
+  </section>
+
+  <footer class="footer">
+    <p>&copy; 2025 Smart Resume Builder. All rights reserved.</p>
+  </footer>
+</body>
+</html>

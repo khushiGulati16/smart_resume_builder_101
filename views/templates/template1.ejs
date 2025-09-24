@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= resume.name %> - Resume</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="template template1">
+  <div class="resume-design-1 main-resume-container">
+    <div class="left-column">
+      <div class="header-name">
+        <h1><%= resume.name %></h1>
+        <p class="role"><%= resume.role %></p>
+      </div>
+
+      <div class="contact-section">
+        <h3>@ CONTACT</h3>
+        <p><%= resume.email %></p>
+        <p><%= resume.phone %></p>
+        <p><%= resume.address %></p>
+        <p><%= resume.linkedin %></p>
+      </div>
+
+      <div class="education-section">
+        <h3>EDUCATION</h3>
+        <p class="degree"><%= resume.education %></p>
+      </div>
+
+      <div class="skills-section">
+        <h3>SKILLS</h3>
+        <ul>
+          <% resume.skills.split(",").forEach(skill => { %>
+            <li><%= skill.trim() %></li>
+          <% }) %>
+        </ul>
+      </div>
+    </div>
+
+    <div class="right-column">
+      <div class="experience-section">
+        <h3>WORK EXPERIENCE</h3>
+        <% if (resume.experience1) { %>
+          <p><%= resume.experience1 %></p>
+        <% } %>
+        <% if (resume.experience2) { %>
+          <p><%= resume.experience2 %></p>
+        <% } %>
+        <% if (resume.experience3) { %>
+          <p><%= resume.experience3 %></p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+  <a href="/api/resume/download/<%= id %>" class="download-button">Download as PDF</a>
+</body>
+</html>

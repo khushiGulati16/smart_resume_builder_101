@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .dashboard-header { text-align: center; margin: 20px 0; }
+    .stats { display: flex; gap: 20px; justify-content: center; margin: 20px 0; }
+    .stat-box { background: #f9f9f9; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .actions { text-align: center; margin: 20px 0; }
+    .resume-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+    .resume-card { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s; }
+    .resume-card:hover { transform: translateY(-5px); }
+    .resume-card h2 { margin: 0 0 10px; }
+    .empty-state { text-align: center; margin: 40px 0; }
+  </style>
+</head>
+<body class="dashboard-page" style="padding-top: var(--header-height);">
+  <header class="navbar">
+    <a href="/" class="logo">AppLogo</a>
+    <nav>
+      <a href="/">Home</a> <a href="/resume/create">Create New</a>
+      <a href="/dashboard">My Resumes</a>
+      <a href="/auth/logout">Logout</a>
+    </nav>
+  </header>
+
+  <div class="dashboard-container" style="max-width: 1200px; margin: 2rem auto; padding: 0 2rem;">
+    <div class="dashboard-header" style="text-align: center; margin: 20px 0;">
+      <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Welcome, <%= user.name || user.email %> 👋</h1>
+      <p class="subtitle" style="font-size: 1.1rem; color: var(--secondary-color); margin-bottom: 2rem;">Manage your resumes, track progress, and create new ones easily.</p>
+    </div>
+
+    <hr style="border: 0; height: 1px; background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0)); margin: 20px 0;" />
+
+    <div class="stats" style="display: flex; gap: 20px; justify-content: center; margin: 20px 0;">
+      <div class="stat-box" style="background: #f9f9f9; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <h2 style="font-size: 2rem; margin-bottom: 5px;"><%= resumes.length %></h2>
+        <p style="font-size: 0.9rem;">Total Resumes</p>
+      </div>
+      <div class="stat-box" style="background: #f9f9f9; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <h2 style="font-size: 2rem; margin-bottom: 5px;">0</h2>
+        <p style="font-size: 0.9rem;">Downloads</p>
+      </div>
+      <div class="stat-box" style="background: #f9f9f9; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <h2 style="font-size: 2rem; margin-bottom: 5px;">0</h2>
+        <p style="font-size: 0.9rem;">Templates Used</p>
+      </div>
+    </div>
+
+    <div class="actions" style="text-align: center; margin: 20px 0;">
+      <a href="/resume/create" class="btn btn-primary" style="padding: 12px 25px;">➕ Create New Resume</a>
+    </div>
+
+    <% if (resumes.length > 0) { %>
+      <div class="resume-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
+        <% resumes.forEach(resume => { %>
+          <div class="resume-card" data-id="<%= resume._id %>" style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s;">
+            <h2 style="margin: 0 0 10px;"><%= resume.name %></h2>
+            <p class="card-subtitle" style="font-size: 0.9rem; color: #555;"><%= resume.role %></p>
+            <p class="date" style="font-size: 0.8rem; color: #888; margin-bottom: 10px;">Created: <%= new Date(resume.createdAt).toLocaleDateString() %></p>
+            <div class="card-actions" style="display: flex; justify-content: space-between; gap: 10px; margin-top: 10px;">
+              <a href="/resume/<%= resume._id %>" target="_blank" class="btn btn-view" style="flex: 1; text-align: center; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-size: 0.9rem; background: #28a745; color: white;">View</a>
+              <a href="/resume/<%= resume._id %>/download" class="btn btn-download" style="flex: 1; text-align: center; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-size: 0.9rem; background: #007BFF; color: white;">Download PDF</a>
+              <button class="btn btn-delete" onclick="deleteResume('<%= resume._id %>')" style="flex: 1; text-align: center; padding: 8px 15px; border-radius: 5px; font-size: 0.9rem; background: #dc3545; color: white;">Delete</button>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="empty-state" style="text-align: center; margin: 40px 0; padding: 40px 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <p style="font-size: 1.2rem; color: #555; margin-bottom: 15px;">You haven't created any resumes yet. Let's get started!</p>
+        <a href="/resume/create" class="btn btn-primary" style="padding: 12px 25px; font-size: 1.1rem;">Create Your First Resume</a>
+      </div>
+    <% } %>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2025 Smart Resume Builder. All rights reserved.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    async function deleteResume(id) {
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+      });
+
+      if (result.isConfirmed) {
+        const response = await fetch(`/resume/${id}`, { method: 'DELETE' });
+        if (response.ok) {
+          document.querySelector(`.resume-card[data-id='${id}']`).remove();
+          Swal.fire("Deleted!", "Your resume has been deleted.", "success");
+        } else {
+          Swal.fire("Error!", "Failed to delete the resume.", "error");
+        }
+      }
+    }
+  </script>
+</body>
+</html>

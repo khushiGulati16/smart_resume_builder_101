@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Resume Builder</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="main-page">
+    <header class="navbar">
+        <a href="/" class="logo">AppLogo</a>
+        <nav>
+            <a href="/">Home</a> <% if (user) { %>
+                <a href="/dashboard">My Resumes</a>
+                <a href="/auth/logout">Logout</a>
+            <% } else { %>
+                <a href="/auth/login">Login</a>
+                <a href="/auth/signup">Sign Up</a>
+            <% } %>
+        </nav>
+    </header>
+    <div class="form-container">
+        <h1 class="form-title">Create a Professional Resume</h1>
+        <p class="subtitle">Fill out your details below and choose a template.</p>
+        <form action="/resume/create" method="POST" class="resume-form">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" placeholder="John Doe" required>
+            <label for="role">Role / Job Title</label>
+            <input type="text" id="role" name="role" placeholder="e.g., Graphic Designer" required>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="john.doe@example.com" required>
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="(123) 456-7890">
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address" placeholder="City, Country">
+            <label for="linkedin">LinkedIn Profile URL</label>
+            <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/yourprofile">
+            <label for="education">Education</label>
+            <textarea id="education" name="education" placeholder="E.g., B.A. Visual Arts, University of Chicago, 2016-2020"></textarea>
+            <label for="experience1">Work Experience 1</label>
+            <textarea id="experience1" name="experience1" placeholder="Job Title, Company, Dates, and responsibilities."></textarea>
+            <label for="experience2">Work Experience 2</label>
+            <textarea id="experience2" name="experience2" placeholder="Job Title, Company, Dates, and responsibilities."></textarea>
+            <label for="experience3">Work Experience 3</label>
+            <textarea id="experience3" name="experience3" placeholder="Job Title, Company, Dates, and responsibilities."></textarea>
+            <label for="skills">Skills</label>
+            <textarea id="skills" name="skills" placeholder="E.g., Adobe Photoshop, Adobe Illustrator, HTML/CSS"></textarea>
+            <div class="template-selection">
+                <h2>Choose your template:</h2>
+                <div class="template-previews">
+                    <label for="template1" class="preview-box">
+                      <input type="radio" name="template" id="template1" value="template1" required checked>
+                      <img src="/images/template1-preview.png" alt="Modern & Clean Template" class="preview-img">
+                      <span class="preview-title">Modern & Clean</span>
+                    </label>
+                    <label for="template2" class="preview-box">
+                      <input type="radio" name="template" id="template2" value="template2">
+                      <img src="/images/template2-preview.png" alt="Minimalist & Stylish Template" class="preview-img">
+                      <span class="preview-title">Minimalist & Stylish</span>
+                    </label>
+                    <label for="template3" class="preview-box">
+                      <input type="radio" name="template" id="template3" value="template3">
+                      <img src="/images/template3-preview.png" alt="Creative Professional Template" class="preview-img">
+                      <span class="preview-title">Creative Professional</span>
+                    </label>
+                    <label for="template4" class="preview-box">
+                      <input type="radio" name="template" id="template4" value="template4">
+                      <img src="/images/template4-preview.png" alt="Elegant Two-Column Template" class="preview-img">
+                      <span class="preview-title">Elegant Two-Column</span>
+                    </label>
+                    <label for="template5" class="preview-box">
+                      <input type="radio" name="template" id="template5" value="template5">
+                      <img src="/images/template5-preview.png" alt="Classic & Formal Template" class="preview-img">
+                      <span class="preview-title">Classic & Formal</span>
+                    </label>
+                </div>
+            </div>
+            <button type="submit">Generate Resume</button>
+        </form>
+    </div>
+    <footer class="footer">
+        <p>&copy; 2025 Smart Resume Builder. All rights reserved.</p>
+    </footer>
+</body>
+</html>

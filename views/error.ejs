@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error - Smart Resume Builder</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .error-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow-dark);
+            text-align: center;
+            color: var(--text-color-light);
+        }
+        .error-container h1 {
+            color: #ef4444; /* A shade of red for the error title */
+            font-size: 3rem;
+        }
+        .error-container p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        .error-container a {
+            color: var(--text-color-accent);
+        }
+    </style>
+</head>
+<body class="auth-page">
+    <header class="navbar">
+        <a href="/" class="logo">AppLogo</a>
+        <nav>
+            <a href="/">Home</a>
+        </nav>
+    </header>
+    <div class="error-container">
+        <h1>Oops! Something went wrong.</h1>
+        <p>We're sorry, but an unexpected error occurred. Please try again later.</p>
+        <% if (message) { %>
+            <p><strong>Error Details:</strong> <%= message %></p>
+        <% } %>
+        <a href="/auth/login" class="btn">Go to Login Page</a>
+    </div>
+</body>
+</html>

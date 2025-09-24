@@ -1,0 +1,717 @@
+/* public/css/style.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* =========================
+   Root Variables
+========================= */
+:root {
+  --primary-color: #007BFF;
+  --secondary-color: #6c757d;
+  --bg-light: #f8f9fa;
+  --bg-dark: #343a40;
+  --text-dark: #212529;
+  --text-light: #f8f9fa;
+  --card-bg: #ffffff;
+  --border-color: #dee2e6;
+  --font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================
+   General Styles
+========================= */
+body {
+  font-family: var(--font-family);
+  background: linear-gradient(135deg, #f0f4ff, #e6f7ff, #fff);
+  background-attachment: fixed;
+  color: var(--text-dark);
+  margin: 0;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  color: var(--text-dark);
+  font-weight: 600;
+  margin-top: 0;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.btn, button {
+  display: inline-block;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, var(--primary-color), #00C6FF);
+  color: var(--text-light);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover, button:hover {
+  background: linear-gradient(135deg, #0056b3, #0094cc);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.btn-secondary {
+  background: var(--secondary-color);
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+/* =========================
+   Navbar
+========================= */
+.navbar {
+  background: linear-gradient(90deg, var(--primary-color), #00C6FF);
+  color: var(--text-light);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--box-shadow);
+}
+
+.navbar .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--text-light);
+}
+
+.navbar nav a {
+  color: var(--text-light);
+  margin-left: 20px;
+  font-weight: 500;
+  position: relative;
+}
+
+.navbar nav a::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: white;
+  transition: width 0.3s;
+}
+
+.navbar nav a:hover::after {
+  width: 100%;
+}
+
+/* =========================
+   Auth Pages
+========================= */
+.auth-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.auth-container {
+  max-width: 450px;
+  margin: auto;
+  padding: 2.5rem;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  box-shadow: var(--box-shadow);
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.auth-container h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.auth-container p {
+  margin-top: 1rem;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.input-group .error {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+/* =========================
+   Form Styles (index.ejs)
+========================= */
+.form-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--box-shadow);
+}
+
+.resume-form h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  color: var(--primary-color);
+}
+
+.resume-form .subtitle {
+  text-align: center;
+  color: var(--secondary-color);
+  margin-bottom: 2rem;
+}
+
+.resume-form label {
+  display: block;
+  font-weight: bold;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.resume-form input[type="text"],
+.resume-form input[type="email"],
+.resume-form input[type="tel"],
+.resume-form input[type="url"],
+.resume-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.resume-form textarea {
+  min-height: 80px;
+}
+
+.template-selection {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.template-previews {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.preview-box {
+  display: block;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.preview-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.preview-box input[type="radio"] {
+  display: none;
+}
+
+.preview-box input[type="radio"]:checked + .preview-img {
+  outline: 4px solid var(--primary-color);
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+.preview-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+}
+
+.preview-title {
+  display: block;
+  text-align: center;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  color: var(--text-dark);
+}
+
+.resume-form button[type="submit"] {
+  width: 100%;
+  margin-top: 2rem;
+  padding: 15px;
+}
+
+/* =========================
+   Dashboard
+/* Dashboard Styles */
+
+
+.dashboard-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow-dark);
+}
+
+.dashboard-container h1, .dashboard-container .subtitle {
+  text-align: center;
+}
+
+/* CORRECTED: Grid layout for the resume list */
+.resume-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* CORRECTED: Styles for each resume card */
+.resume-card {
+  background-color: #2e3b4e;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-dark);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #475569;
+  transition: transform 0.2s ease;
+}
+
+.resume-card:hover {
+  transform: translateY(-5px);
+}
+
+.resume-card h2 {
+  font-size: 1.25rem;
+}
+
+/* CORRECTED: Flexbox for button alignment */
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  align-items: center; /* Vertically aligns the buttons */
+}
+
+.btn-view, .btn-download, .btn-delete {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+}
+
+.btn-view {
+  background-color: #22c55e;
+}
+
+.btn-view:hover {
+  background-color: #16a34a;
+}
+
+.btn-delete {
+  background-color: #ef4444; /* Added a distinct red color for delete */
+}
+
+.btn-delete:hover {
+  background-color: #dc2626;
+}
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, rgba(0,123,255,0.05), rgba(0,198,255,0.05));
+  border-radius: 8px;
+  border: 2px dashed var(--primary-color);
+  box-shadow: var(--box-shadow);
+}
+
+.empty-state p {
+  font-size: 1.2rem;
+  color: var(--secondary-color);
+  margin-bottom: 1.5rem;
+}
+
+/* =========================
+   Templates (unchanged from yours, just refined UI)
+========================= */
+/* keep all your template1–5 code here as-is (already included in your file) */
+
+/* =========================
+   Download Button
+========================= */
+.download-button {
+  display: block;
+  width: 200px;
+  margin: 30px auto 0;
+  padding: 12px 20px;
+  background: linear-gradient(45deg, #10b981, #059669);
+  color: white;
+  text-align: center;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  transition: transform 0.2s, box-shadow 0.3s, filter 0.3s;
+}
+
+.download-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+  filter: brightness(1.1);
+}
+
+/* =========================
+   Footer
+========================= */
+.footer {
+  background: linear-gradient(90deg, #343a40, #212529);
+  color: #fff;
+  padding: 1.2rem;
+  text-align: center;
+}
+
+/* =========================
+   Utility
+========================= */
+.loading-spinner {
+  display: none;
+  margin: 20px auto;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid var(--primary-color);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+@media print {
+  body, .resume-design-1, .template-card, .resume-alt,
+  .resume-creative, .resume-professional, .resume-classic {
+    box-shadow: none !important;
+    background: none !important;
+  }
+}
+/* --- Template 1: RHODA JACKSON Design --- */
+.resume-design-1 {
+  display: flex;
+  max-width: 900px;
+  margin: 40px auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  background: var(--resume-bg-light);
+}
+
+.left-column {
+  flex: 1;
+  background: #fdf2f4;
+  padding: 40px 30px;
+  color: var(--resume-text-dark);
+}
+
+.right-column {
+  flex: 2;
+  background: var(--resume-bg-light);
+  padding: 40px 50px;
+  color: var(--resume-text-dark);
+}
+
+.header-name {
+  margin-bottom: 30px;
+}
+
+.header-name h1 {
+  font-size: 2.5rem;
+  color: #d1495b;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.header-name .role {
+  font-size: 1.2rem;
+  color: #d1495b;
+  background: rgba(209, 73, 91, 0.1);
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: inline-block;
+  font-weight: bold;
+}
+
+.contact-section h3,
+.education-section h3,
+.skills-section h3,
+.experience-section h3 {
+  font-size: 1.2rem;
+  color: #d1495b;
+  text-transform: uppercase;
+  border-bottom: 2px solid #d1495b;
+  padding-bottom: 5px;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+}
+
+.contact-section p,
+.education-section p,
+.skills-section ul li,
+.experience-section p {
+  color: var(--resume-text-dark);
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+.skills-section ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.skills-section ul li {
+  margin-bottom: 5px;
+  position: relative;
+  padding-left: 20px;
+}
+
+.skills-section ul li::before {
+  content: "★";
+  position: absolute;
+  left: 0;
+  color: #d1495b;
+  font-size: 1rem;
+}
+
+.experience-section h3 {
+  border-bottom: 2px solid #d1495b;
+}
+
+/* Template 2: Minimalist & Stylish */
+.template2 .resume-alt {
+  max-width: 800px;
+  margin: auto;
+  background: #ffffff;
+  padding: 50px 40px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+}
+.template2 header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #333;
+}
+.template2 h1 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 5px;
+}
+.template2 .block {
+  padding: 25px;
+  background: #f8f8f8;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+  margin-bottom: 20px;
+}
+.template2 .block:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.template2 .block h3 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  border-left: 4px solid #3498db;
+  padding-left: 10px;
+  color: #3498db;
+}
+
+/* Template 3: Creative Two-Panel */
+.template3 .resume-creative {
+  display: flex;
+  max-width: 900px;
+  margin: auto;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.template3 .left-panel {
+  flex: 1;
+  background: #2c3e50;
+  color: white; /* Set default text color to white for the left panel */
+  padding: 40px 30px;
+  text-align: center;
+}
+.template3 .left-panel h1 {
+  color: white;
+  font-size: 2.5rem;
+  border-bottom: 2px solid rgba(255,255,255,0.2);
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+.template3 .left-panel h3 {
+  color: #a4c9e8;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 10px;
+  margin-top: 30px;
+}
+.template3 .left-panel p {
+  color: white; /* Explicitly set paragraph text to white */
+  opacity: 1;
+}
+.template3 .left-panel ul {
+  list-style-type: none;
+  padding: 0;
+  text-align: center;
+}
+.template3 .left-panel li {
+  background: rgba(255,255,255,0.1);
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin: 5px;
+  display: inline-block;
+  color: white; /* Ensure list items are also white */
+}
+.template3 .right-panel {
+  flex: 2;
+  background: white;
+  padding: 40px;
+}
+.template3 .right-panel h2 {
+  font-size: 1.8rem;
+  border-bottom: 2px solid #e74c3c;
+  padding-bottom: 5px;
+  margin-bottom: 20px;
+  color: #e74c3c;
+}
+
+/* Template 4: Elegant Two-Column */
+.template4 .resume-professional {
+  max-width: 900px;
+  margin: auto;
+  background: white;
+  padding: 40px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-radius: 12px;
+}
+.template4 header {
+  text-align: center;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 20px;
+}
+.template4 h1 {
+  font-size: 3rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  color: #555;
+}
+.template4 .section-block {
+  margin-bottom: 30px;
+}
+.template4 h2 {
+  font-size: 1.8rem;
+  border-bottom: 2px solid #8e44ad;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+  color: #8e44ad;
+}
+.template4 .skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  gap: 10px;
+}
+.template4 .skills-list li {
+  background: #f8f8f8;
+  padding: 8px 15px;
+  border-radius: 20px;
+  border: 1px solid #eee;
+}
+
+/* Template 5: Classic & Formal */
+.template5 .resume-classic {
+  max-width: 700px;
+  margin: auto;
+  background: white;
+  padding: 40px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+.template5 .header-classic {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.template5 h1 {
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  color: #333;
+}
+.template5 .contact-info p {
+  margin: 5px 0;
+}
+.template5 .line-divider {
+  width: 100%;
+  height: 2px;
+  background-color: #333;
+  margin: 20px 0;
+}
+.template5 section {
+  margin-bottom: 25px;
+}
+.template5 h3 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
