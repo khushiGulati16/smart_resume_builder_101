@@ -55,7 +55,8 @@ exports.downloadResume = async (req, res, next) => {
     const templatePath = path.join(__dirname, '..', 'views', 'templates', `${template}.ejs`);
     const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
     const page = await browser.newPage();
-    const htmlContent = await ejs.renderFile(templatePath, { resume, id });
+    // ✅ Corrected: Pass the user variable to the template
+    const htmlContent = await ejs.renderFile(templatePath, { resume, id, user: req.user });
     await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
     await page.addStyleTag({ path: path.join(__dirname, '..', 'public', 'css', 'style.css') });
     await page.waitForSelector('.main-resume-container', { timeout: 10000 });
@@ -63,10 +64,10 @@ exports.downloadResume = async (req, res, next) => {
       format: 'A4',
       printBackground: true,
       margin: {
-        top: '15mm',
-        right: '15mm',
-        bottom: '15mm',
-        left: '15mm',
+        top: '0mm',
+        right: '0mm',
+        bottom: '0mm',
+        left: '0mm',
       }
     });
     await browser.close();

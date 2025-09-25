@@ -9,7 +9,6 @@ const createToken = (id) => {
   });
 };
 
-// Show signup page
 exports.showSignup = (req, res) => {
   res.render("auth/signup");
 };

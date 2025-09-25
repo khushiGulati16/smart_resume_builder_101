@@ -32,7 +32,12 @@
     <header class="navbar">
         <a href="/" class="logo">AppLogo</a>
         <nav>
-            <a href="/">Home</a>
+            <% if (user) { %> <a href="/dashboard">My Resumes</a>
+                <a href="/auth/logout">Logout</a>
+            <% } else { %>
+                <a href="/auth/login">Login</a>
+                <a href="/auth/signup">Sign Up</a>
+            <% } %>
         </nav>
     </header>
     <div class="error-container">

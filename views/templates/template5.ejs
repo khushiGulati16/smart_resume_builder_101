@@ -1,47 +1,169 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title><%= resume.name %> - Resume</title>
-  <link rel="stylesheet" href="/css/style.css">
+    <title><%= resume.name %> - Resume</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+            --text-light: #f1f5f9;
+            --muted: #cbd5e1;
+            --accent: #6366f1;
+            --accent-glow: #8b5cf6;
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --shadow: 0 10px 25px rgba(0,0,0,0.6);
+            --radius: 16px;
+            --font: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        body.template {
+            font-family: var(--font);
+            background: var(--bg-gradient);
+            color: #333; /* Default body text color for contrast */
+            padding-top: 80px; /* Added padding to accommodate the fixed navbar */
+            padding-bottom: 2rem;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+        }
+        .navbar .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .navbar nav a {
+            margin-left: 2rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text-light);
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .navbar nav a:hover {
+            color: var(--accent);
+        }
+        .navbar nav a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        .navbar nav a:hover::after {
+            width: 100%;
+        }
+
+        .main-resume-container {
+            /* The user requested no changes to the main template styles, 
+               so these styles remain external or defined in the user's stylesheet. */
+        }
+
+        .download-button {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(45deg, var(--accent), var(--accent-glow));
+            box-shadow: 0 5px 20px rgba(99,102,241,0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .download-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(139,92,246,0.6);
+        }
+
+        @media print {
+            .navbar, .download-button {
+                display: none !important;
+            }
+            body.template {
+                padding-top: 0;
+                background: none;
+            }
+            .main-resume-container {
+                box-shadow: none;
+            }
+        }
+    </style>
 </head>
 <body class="template template5">
-  <div class="resume-classic main-resume-container">
-    <header class="header-classic">
-      <h1><%= resume.name %></h1>
-      <p class="role-title"><%= resume.role %></p>
-      <div class="contact-info">
-        <p><%= resume.email %></p>
-        <p><%= resume.phone %></p>
-        <p><%= resume.address %></p>
-        <p><%= resume.linkedin %></p>
-      </div>
+    <header class="navbar">
+        <a href="/" class="logo">SmartResume</a>
+        <nav>
+            <% if (user) { %>
+                <a href="/resume/create">Create New</a>
+                <a href="/dashboard">My Resumes</a>
+                <a href="/auth/logout">Logout</a>
+            <% } else { %>
+                <a href="/auth/login">Login</a>
+                <a href="/auth/signup">Sign Up</a>
+            <% } %>
+        </nav>
     </header>
 
-    <div class="line-divider"></div>
+    <div class="resume-classic main-resume-container">
+        <header class="header-classic">
+            <h1><%= resume.name %></h1>
+            <p class="role-title"><%= resume.role %></p>
+            <div class="contact-info">
+                <p><%= resume.email %></p>
+                <p><%= resume.phone %></p>
+                <p><%= resume.address %></p>
+                <p><%= resume.linkedin %></p>
+            </div>
+        </header>
 
-    <section>
-      <h3>Education</h3>
-      <p><%= resume.education %></p>
-    </section>
+        <div class="line-divider"></div>
 
-    <section>
-      <h3>Work Experience</h3>
-      <% if (resume.experience1) { %>
-        <p><%= resume.experience1 %></p>
-      <% } %>
-      <% if (resume.experience2) { %>
-        <p><%= resume.experience2 %></p>
-      <% } %>
-      <% if (resume.experience3) { %>
-        <p><%= resume.experience3 %></p>
-      <% } %>
-    </section>
+        <section>
+            <h3>Education</h3>
+            <p><%= resume.education %></p>
+        </section>
 
-    <section>
-      <h3>Skills</h3>
-      <p><%= resume.skills %></p>
-    </section>
-  </div>
-  <a href="/api/resume/download/<%= id %>" class="download-button">Download as PDF</a>
+        <section>
+            <h3>Work Experience</h3>
+            <% if (resume.experience1) { %>
+                <p><%= resume.experience1 %></p>
+            <% } %>
+            <% if (resume.experience2) { %>
+                <p><%= resume.experience2 %></p>
+            <% } %>
+            <% if (resume.experience3) { %>
+                <p><%= resume.experience3 %></p>
+            <% } %>
+        </section>
+
+        <section>
+            <h3>Skills</h3>
+            <p><%= resume.skills %></p>
+        </section>
+    </div>
+   
 </body>
 </html>

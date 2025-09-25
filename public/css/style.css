@@ -430,10 +430,14 @@ a:hover {
 }
 
 @media print {
-  body, .resume-design-1, .template-card, .resume-alt,
+  /* This rule specifically targets the main body and resume container for printing */
+  body, .main-resume-container, .resume-design-1, .resume-alt,
   .resume-creative, .resume-professional, .resume-classic {
     box-shadow: none !important;
     background: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
   }
 }
 /* --- Template 1: RHODA JACKSON Design --- */
@@ -530,6 +534,12 @@ a:hover {
   border-bottom: 2px solid #d1495b;
 }
 
+.download-button {
+    display: none !important;
+  }
+    .download-button-ui {
+    display: none !important;
+  }
 /* Template 2: Minimalist & Stylish */
 .template2 .resume-alt {
   max-width: 800px;

@@ -3,12 +3,222 @@
 <head>
     <title>Smart Resume Builder</title>
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+            --text-light: #f1f5f9;
+            --muted: #cbd5e1;
+            --accent: #6366f1;
+            --accent-glow: #8b5cf6;
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --shadow: 0 10px 25px rgba(0,0,0,0.6);
+            --radius: 16px;
+            --font: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        body.main-page {
+            font-family: var(--font);
+            background: var(--bg-gradient);
+            color: var(--text-light);
+            padding-top: 80px;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+        }
+        .navbar .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .navbar nav a {
+            margin-left: 2rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text-light);
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .navbar nav a:hover {
+            color: var(--accent);
+        }
+        .navbar nav a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        .navbar nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Form Container */
+        .form-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            flex-grow: 1;
+        }
+        .form-container .form-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--accent), var(--accent-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .form-container .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--muted);
+            margin-bottom: 2rem;
+        }
+        .resume-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .resume-form label {
+            font-weight: 600;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+        .resume-form input,
+        .resume-form textarea {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .resume-form input:focus,
+        .resume-form textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+        }
+        .resume-form textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .resume-form button {
+            background: linear-gradient(45deg, var(--accent), var(--accent-glow));
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 20px rgba(99,102,241,0.5);
+        }
+        .resume-form button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(139,92,246,0.6);
+        }
+
+        /* Template Selection */
+        .template-selection {
+            margin-top: 2rem;
+        }
+        .template-selection h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+        .template-previews {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .preview-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .preview-box:hover {
+            transform: translateY(-5px);
+        }
+        .preview-box input[type="radio"] {
+            display: none;
+        }
+        .preview-box input[type="radio"]:checked + .preview-img {
+            border: 3px solid var(--accent-glow);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+        }
+        .preview-img {
+            width: 150px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        .preview-title {
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--muted);
+        }
+        .preview-box input[type="radio"]:checked ~ .preview-title {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(15,23,42,0.85);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: auto;
+            font-size: 0.95rem;
+            color: var(--muted);
+        }
+    </style>
 </head>
 <body class="main-page">
     <header class="navbar">
-        <a href="/" class="logo">AppLogo</a>
+        <a href="/" class="logo">SmartResume</a>
         <nav>
-            <a href="/">Home</a> <% if (user) { %>
+            <% if (user) { %>
                 <a href="/dashboard">My Resumes</a>
                 <a href="/auth/logout">Logout</a>
             <% } else { %>
@@ -47,29 +257,29 @@
                 <h2>Choose your template:</h2>
                 <div class="template-previews">
                     <label for="template1" class="preview-box">
-                      <input type="radio" name="template" id="template1" value="template1" required checked>
-                      <img src="/images/template1-preview.png" alt="Modern & Clean Template" class="preview-img">
-                      <span class="preview-title">Modern & Clean</span>
+                        <input type="radio" name="template" id="template1" value="template1" required checked>
+                        <img src="/images/template1-preview.png" alt="Modern & Clean Template" class="preview-img">
+                        <span class="preview-title">Modern & Clean</span>
                     </label>
                     <label for="template2" class="preview-box">
-                      <input type="radio" name="template" id="template2" value="template2">
-                      <img src="/images/template2-preview.png" alt="Minimalist & Stylish Template" class="preview-img">
-                      <span class="preview-title">Minimalist & Stylish</span>
+                        <input type="radio" name="template" id="template2" value="template2">
+                        <img src="/images/template2-preview.png" alt="Minimalist & Stylish Template" class="preview-img">
+                        <span class="preview-title">Minimalist & Stylish</span>
                     </label>
                     <label for="template3" class="preview-box">
-                      <input type="radio" name="template" id="template3" value="template3">
-                      <img src="/images/template3-preview.png" alt="Creative Professional Template" class="preview-img">
-                      <span class="preview-title">Creative Professional</span>
+                        <input type="radio" name="template" id="template3" value="template3">
+                        <img src="/images/template3-preview.png" alt="Creative Professional Template" class="preview-img">
+                        <span class="preview-title">Creative Professional</span>
                     </label>
                     <label for="template4" class="preview-box">
-                      <input type="radio" name="template" id="template4" value="template4">
-                      <img src="/images/template4-preview.png" alt="Elegant Two-Column Template" class="preview-img">
-                      <span class="preview-title">Elegant Two-Column</span>
+                        <input type="radio" name="template" id="template4" value="template4">
+                        <img src="/images/template4-preview.png" alt="Elegant Two-Column Template" class="preview-img">
+                        <span class="preview-title">Elegant Two-Column</span>
                     </label>
                     <label for="template5" class="preview-box">
-                      <input type="radio" name="template" id="template5" value="template5">
-                      <img src="/images/template5-preview.png" alt="Classic & Formal Template" class="preview-img">
-                      <span class="preview-title">Classic & Formal</span>
+                        <input type="radio" name="template" id="template5" value="template5">
+                        <img src="/images/template5-preview.png" alt="Classic & Formal Template" class="preview-img">
+                        <span class="preview-title">Classic & Formal</span>
                     </label>
                 </div>
             </div>

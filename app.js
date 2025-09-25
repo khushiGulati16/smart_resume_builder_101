@@ -33,10 +33,8 @@ app.get("*", checkUser);
 // ===== Public Routes (no authentication required) =====
 app.get("/", (req, res) => {
   if (res.locals.user) {
-    // ✅ If user is logged in, show the home page
     res.render("home", { user: res.locals.user });
   } else {
-    // ✅ If user is not logged in, redirect to the login page
     res.redirect("/auth/login");
   }
 });
@@ -53,13 +51,17 @@ app.get("/dashboard", requireAuth, async (req, res, next) => {
 });
 app.use("/resume", requireAuth, resumeRoutes);
 
-// ===== Error Handler =====
+// ===== Error Handler (Corrected) =====
 app.use((err, req, res, next) => {
   console.error("Error:", err.stack);
-  res.status(500).render("error", { message: "Something broke! " + err.message, error: err });
+  // ✅ Corrected: Pass req.user to the error page so the navbar works
+  res.status(500).render("error", { 
+      message: "Something broke! " + err.message, 
+      user: req.user || null // Pass the user if available
+  });
 });
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}/auth/login`);
 });
