@@ -76,8 +76,7 @@
         }
 
         .main-resume-container {
-            /* The user requested no changes to the main template styles, 
-               so these styles remain external or defined in the user's stylesheet. */
+            /* Main layout styles live in your external stylesheet */
         }
 
         .download-button {
@@ -113,58 +112,86 @@
     </style>
 </head>
 <body class="template template3">
-    <header class="navbar">
-        <a href="/" class="logo">SmartResume</a>
-        <nav>
+<header class="navbar">
+    <a href="/" class="logo">ResumeHub</a>
+
+    <nav>
+        <% if (user && user.role === "admin") { %>
+            <a href="/admin">Admin Dashboard</a>
+            <a href="/admin/users">Users</a>
+            <a href="/admin/resumes">All Resumes</a>
+            <a href="/ats">ATS Checker</a>
+            <a href="/auth/logout">Logout</a>
+        <% } else { %>
+            <a href="/">Home</a>
             <a href="/resume/create">Create New</a>
             <a href="/dashboard">My Resumes</a>
+            <a href="/ats">ATS Checker</a>
             <a href="/auth/logout">Logout</a>
-        </nav>
-    </header>
+        <% } %>
+    </nav>
+</header>
 
-    <div class="resume-creative main-resume-container">
-        <div class="left-panel">
-            <h1><%= resume.name %></h1>
-            <p class="role-title"><%= resume.role %></p>
 
-            <section class="panel-section">
-                <h3>Contact</h3>
-                <p><%= resume.email %></p>
-                <p><%= resume.phone %></p>
-                <p><%= resume.address %></p>
-                <p><%= resume.linkedin %></p>
-            </section>
+<div class="resume-creative main-resume-container">
+    <div class="left-panel">
+        <h1><%= resume.name %></h1>
+        <p class="role-title"><%= resume.role %></p>
 
-            <section class="panel-section">
-                <h3>Skills</h3>
-                <ul>
-                    <% resume.skills.split(",").forEach(skill => { %>
-                        <li><%= skill.trim() %></li>
-                    <% }) %>
-                </ul>
-            </section>
-        </div>
+        <section class="panel-section">
+            <h3>Contact</h3>
+            <p><%= resume.email %></p>
+            <p><%= resume.phone %></p>
+            <p><%= resume.address %></p>
+            <p><%= resume.linkedin %></p>
+        </section>
 
-        <div class="right-panel">
-            <section>
-                <h2>Education</h2>
-                <p><%= resume.education %></p>
-            </section>
-
-            <section>
-                <h2>Work Experience</h2>
-                <% if (resume.experience1) { %>
-                    <p><%= resume.experience1 %></p>
-                <% } %>
-                <% if (resume.experience2) { %>
-                    <p><%= resume.experience2 %></p>
-                <% } %>
-                <% if (resume.experience3) { %>
-                    <p><%= resume.experience3 %></p>
-                <% } %>
-            </section>
-        </div>
+        <section class="panel-section">
+            <h3>Skills</h3>
+            <ul>
+                <% resume.skills.split(",").forEach(skill => { %>
+                    <li><%= skill.trim() %></li>
+                <% }) %>
+            </ul>
+        </section>
     </div>
-  
+
+    <div class="right-panel">
+        <% if (resume.summary) { %>
+            <section>
+                <h2>Summary</h2>
+                <p><%= resume.summary %></p>
+            </section>
+        <% } %>
+
+        <section>
+            <h2>Education</h2>
+            <p><%= resume.education %></p>
+        </section>
+
+        <section>
+            <h2>Work Experience</h2>
+            <% if (resume.experience1) { %>
+                <p><%= resume.experience1 %></p>
+            <% } %>
+            <% if (resume.experience2) { %>
+                <p><%= resume.experience2 %></p>
+            <% } %>
+            <% if (resume.experience3) { %>
+                <p><%= resume.experience3 %></p>
+            <% } %>
+        </section>
+
+        <% if (resume.projects) { %>
+            <section>
+                <h2>Projects / Certifications</h2>
+                <p><%= resume.projects %></p>
+            </section>
+        <% } %>
+    </div>
+</div>
+
+<a href="/resume/<%= id %>/download" class="download-button">Download as PDF</a>
+
 </body>
 </html>

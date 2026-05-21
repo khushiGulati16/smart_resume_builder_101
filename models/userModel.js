@@ -1,12 +1,13 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please enter your full name"],
     minlength: [2, "Name must be at least 2 characters long"],
-    trim: true
+    trim: true,
   },
   email: {
     type: String,
@@ -20,27 +21,32 @@ const userSchema = new mongoose.Schema({
     required: [true, "Please enter a password"],
     minlength: [6, "Minimum password length is 6 characters"],
   },
+  // ✅ New: role field for advanced JWT / authorization use
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
 });
 
+// Hash password before saving
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
-  const salt = await bcrypt.genSalt();
+  const salt = await bcrypt.genSalt(10); // specify rounds for clarity
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
+// Static login method
 userSchema.statics.login = async function (email, password) {
   const user = await this.findOne({ email });
-  if (user) {
-    const auth = await bcrypt.compare(password, user.password);
-    if (auth) {
-      return user;
-    }
-    throw Error("Incorrect password");
-  }
-  throw Error("Incorrect email");
+  if (!user) throw new Error("Incorrect email");
+
+  const auth = await bcrypt.compare(password, user.password);
+  if (!auth) throw new Error("Incorrect password");
+
+  return user;
 };
 
 const User = mongoose.model("User", userSchema);
-
 module.exports = User;

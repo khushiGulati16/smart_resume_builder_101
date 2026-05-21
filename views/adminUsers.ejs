@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All Users (Admin)</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+      --text-light: #f1f5f9;
+      --muted: #cbd5e1;
+      --accent: #6366f1;
+      --accent-glow: #8b5cf6;
+      --card-bg: rgba(30, 41, 59, 0.9);
+      --shadow: 0 10px 25px rgba(0,0,0,0.6);
+      --radius: 16px;
+      --font: 'Poppins', 'Segoe UI', sans-serif;
+    }
+
+    body.admin-page {
+      font-family: var(--font);
+      background: var(--bg-gradient);
+      color: var(--text-light);
+      padding-top: 80px;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 1rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      box-shadow: var(--shadow);
+      z-index: 1000;
+    }
+    .navbar .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .navbar nav a {
+      margin-left: 2rem;
+      font-weight: 500;
+      text-decoration: none;
+      color: var(--text-light);
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .navbar nav a:hover {
+      color: var(--accent);
+    }
+    .navbar nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+    .navbar nav a:hover::after {
+      width: 100%;
+    }
+
+    .admin-container {
+      max-width: 1100px;
+      margin: 2rem auto 3rem;
+      padding: 0 2rem;
+      flex: 1;
+    }
+
+    .admin-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .admin-header h1 {
+      font-size: 2.4rem;
+      margin-bottom: 0.3rem;
+      background: linear-gradient(90deg, var(--accent), var(--accent-glow));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .admin-header p {
+      font-size: 1rem;
+      color: var(--muted);
+    }
+
+    .users-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 1.5rem 1.5rem 1.8rem;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    table.admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    table.admin-table thead {
+      background: rgba(15,23,42,0.9);
+    }
+    table.admin-table th,
+    table.admin-table td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(148,163,184,0.25);
+      white-space: nowrap;
+    }
+    table.admin-table th {
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    table.admin-table tbody tr:nth-child(even) {
+      background: rgba(15,23,42,0.35);
+    }
+    table.admin-table tbody tr:hover {
+      background: rgba(79,70,229,0.25);
+    }
+
+    .role-pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      text-transform: lowercase;
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+    }
+    .role-pill.admin {
+      background: rgba(16,185,129,0.18);
+      color: #6ee7b7;
+    }
+
+    .user-id {
+      font-family: "Fira Code", monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    /* Delete button inside table */
+    .btn-delete-user {
+      background: #ef4444;
+      color: #fff;
+      padding: 6px 13px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease,
+        box-shadow 0.2s ease;
+      box-shadow: 0 0 0 rgba(248,113,113,0.35);
+    }
+    .btn-delete-user:hover {
+      background: #b91c1c;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(248,113,113,0.55);
+    }
+    .btn-delete-user:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 1.5rem;
+      background: rgba(15,23,42,0.85);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body class="admin-page">
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <a href="/" class="logo">ResumeHub</a>
+    <nav>
+      <a href="/admin">Home</a>
+      <a href="/admin/users">Admin Users</a>
+      <a href="/admin/resumes">Admin Resumes</a>
+      <a href="/ats">ATS Checker</a>
+      <a href="/auth/logout">Logout</a>
+    </nav>
+  </header>
+
+  <main class="admin-container">
+    <div class="admin-header">
+      <h1>All Users (Admin)</h1>
+      <p>View all registered users, their roles, and manage them.</p>
+    </div>
+
+    <section class="users-card">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>User ID</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach((u, index) => { %>
+            <tr data-id="<%= u._id %>">
+              <td><%= index + 1 %></td>
+              <td><%= u.name %></td>
+              <td><%= u.email %></td>
+              <td>
+                <span class="role-pill <%= u.role === 'admin' ? 'admin' : '' %>">
+                  <%= u.role %>
+                </span>
+              </td>
+              <td><span class="user-id"><%= u._id %></span></td>
+              <td>
+                <% if (u.role === 'admin') { %>
+                  <!-- don’t allow deleting admins (or yourself) -->
+                  ---
+                <% } else { %>
+                  <button
+                    class="btn-delete-user"
+                    onclick="deleteUser('<%= u._id %>')"
+                  >
+                    Delete
+                  </button>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2025 Smart Resume Builder. All rights reserved.</p>
+  </footer>
+
+  <!-- Axios + SweetAlert -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    async function deleteUser(id) {
+      const row = document.querySelector(`tr[data-id='${id}']`);
+      if (!row) return;
+
+      const result = await Swal.fire({
+        title: "Delete this user?",
+        text: "This will remove the user and their resumes. This action cannot be undone!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#ef4444",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete user"
+      });
+
+      if (!result.isConfirmed) return;
+
+      try {
+        const res = await axios.delete(`/admin/users/${id}`);
+
+        if (res.data && res.data.success) {
+          row.remove();
+          Swal.fire("Deleted!", "User has been deleted.", "success");
+        } else {
+          Swal.fire(
+            "Error",
+            res.data && res.data.message
+              ? res.data.message
+              : "Failed to delete user.",
+            "error"
+          );
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "Failed to delete user.", "error");
+      }
+    }
+  </script>
+</body>
+</html>

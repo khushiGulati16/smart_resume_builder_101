@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= resume.name %> - Resume</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        :root {
+            --t9-main: #8c2435;
+            --t9-main-dark: #611624;
+            --t9-accent: #f59e0b;
+            --t9-bg: #f9fafb;
+            --t9-text: #111827;
+            --t9-muted: #6b7280;
+            --t9-border: #e5e7eb;
+            --font: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        body.template {
+            font-family: var(--font);
+            background: #0f172a;
+            margin: 0;
+            padding-top: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            z-index: 1000;
+        }
+        .navbar .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #f97316;
+            text-decoration: none;
+        }
+        .navbar nav a {
+            margin-left: 2rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: #e5e7eb;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .navbar nav a:hover {
+            color: #fed7aa;
+        }
+
+        /* Container */
+        .template9-resume {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 40px auto;
+            background: #ffffff;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+        }
+
+        /* LEFT */
+        .t9-left {
+            width: 28%;
+            background: #ffffff;
+            padding: 28px 24px 32px;
+            border-right: 1px solid var(--t9-border);
+        }
+
+        .t9-initials-box {
+            width: 100%;
+            border: 4px solid var(--t9-main);
+            padding: 26px 0;
+            text-align: center;
+            margin-bottom: 22px;
+        }
+        .t9-initials {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: var(--t9-main);
+        }
+
+        .t9-left-section-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 12px;
+            margin-bottom: 4px;
+        }
+        .t9-left-divider {
+            height: 2px;
+            width: 34px;
+            background: var(--t9-main);
+            margin-bottom: 10px;
+        }
+
+        .t9-contact-line {
+            font-size: 0.85rem;
+            color: var(--t9-text);
+            margin-bottom: 6px;
+        }
+
+        .t9-skill-list {
+            list-style: disc;
+            padding-left: 18px;
+        }
+
+        /* RIGHT SIDE */
+        .t9-right {
+            width: 72%;
+            background: var(--t9-main);
+            color: #ffffff;
+            padding: 32px 40px;
+        }
+
+        .t9-header-name {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .t9-header-role {
+            font-size: 1.05rem;
+            margin: 4px 0 14px;
+        }
+
+        .t9-summary {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            max-width: 90%;
+        }
+
+        .t9-banner {
+            margin-top: 26px;
+            background: var(--t9-accent);
+            color: #ffffff;
+            padding: 8px 16px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: inline-block;
+            position: relative;
+        }
+
+        .t9-section-content {
+            margin-top: 10px;
+        }
+
+        .t9-exp-block {
+            margin-bottom: 14px;
+        }
+
+        .t9-exp-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .t9-exp-meta {
+            font-size: 0.85rem;
+            color: #fde68a;
+            margin-bottom: 4px;
+        }
+
+        .t9-right ul {
+            padding-left: 18px;
+        }
+
+        .t9-right li {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .t9-cert-text {
+            font-size: 0.9rem;
+            color: #fffbeb;
+        }
+    </style>
+</head>
+
+<body class="template template9">
+
+<header class="navbar">
+    <a href="/" class="logo">ResumeHub</a>
+
+    <nav>
+        <% if (user && user.role === "admin") { %>
+            <a href="/admin">Admin Dashboard</a>
+            <a href="/admin/users">Users</a>
+            <a href="/admin/resumes">All Resumes</a>
+            <a href="/ats">ATS Checker</a>
+            <a href="/auth/logout">Logout</a>
+        <% } else { %>
+            <a href="/">Home</a>
+            <a href="/resume/create">Create New</a>
+            <a href="/dashboard">My Resumes</a>
+            <a href="/ats">ATS Checker</a>
+            <a href="/auth/logout">Logout</a>
+        <% } %>
+    </nav>
+</header>
+
+
+<% 
+  let initials = "";
+  if (resume.name) {
+    initials = resume.name.split(" ").filter(Boolean).map(n => n[0]).slice(0,2).join("").toUpperCase();
+  }
+%>
+
+<div class="template9-resume main-resume-container">
+
+    <!-- LEFT COLUMN -->
+    <aside class="t9-left">
+
+        <div class="t9-initials-box">
+            <div class="t9-initials"><%= initials || "NA" %></div>
+        </div>
+
+        <!-- CONTACT -->
+        <section>
+            <div class="t9-left-section-title">CONTACT</div>
+            <div class="t9-left-divider"></div>
+
+            <% if (resume.phone) { %><div class="t9-contact-line"><%= resume.phone %></div><% } %>
+            <% if (resume.email) { %><div class="t9-contact-line"><%= resume.email %></div><% } %>
+            <% if (resume.linkedin) { %><div class="t9-contact-line"><%= resume.linkedin %></div><% } %>
+            <% if (resume.address) { %><div class="t9-contact-line"><%= resume.address %></div><% } %>
+        </section>
+
+        <!-- EDUCATION -->
+        <section>
+            <div class="t9-left-section-title">EDUCATION</div>
+            <div class="t9-left-divider"></div>
+
+            <% if (resume.education) { %>
+                <div class="t9-contact-line"><%= resume.education %></div>
+            <% } else { %>
+                <div class="t9-contact-line">Not provided.</div>
+            <% } %>
+        </section>
+
+        <!-- SKILLS -->
+        <section>
+            <div class="t9-left-section-title">KEY SKILLS</div>
+            <div class="t9-left-divider"></div>
+
+            <% if (resume.skills) { %>
+                <ul class="t9-skill-list">
+                    <% resume.skills.split(",").forEach(skill => { %>
+                        <% if (skill.trim().length>0){ %>
+                            <li><%= skill.trim() %></li>
+                        <% } %>
+                    <% }) %>
+                </ul>
+            <% } else { %>
+                <div class="t9-contact-line">Not provided.</div>
+            <% } %>
+        </section>
+
+    </aside>
+
+    <!-- RIGHT COLUMN -->
+    <main class="t9-right">
+
+        <!-- HEADER -->
+        <h1 class="t9-header-name"><%= resume.name %></h1>
+        <h2 class="t9-header-role"><%= resume.role %></h2>
+
+        <!-- SUMMARY -->
+        <section>
+            <div class="t9-banner">SUMMARY</div>
+            <div class="t9-section-content">
+                <p class="t9-summary">
+
+                    <% if (resume.summary && resume.summary.trim().length > 0) { %>
+                        <%= resume.summary %>
+
+                    <% } else if (resume.skills) { %>
+                        <%= resume.role %> skilled in <%= resume.skills %>. Committed to delivering high-quality results and continuous professional improvement.
+
+                    <% } else { %>
+                        <%= resume.role %> committed to delivering high-quality results and continuous improvement.
+                    <% } %>
+
+                </p>
+            </div>
+        </section>
+
+        <!-- EXPERIENCE -->
+        <section>
+            <div class="t9-banner" style="margin-top:22px;">PROFESSIONAL EXPERIENCE</div>
+            <div class="t9-section-content">
+
+                <% if (resume.experience1) { %>
+                    <div class="t9-exp-block">
+                        <p class="t9-exp-title">Experience 1</p>
+                        <p class="t9-exp-meta">Key responsibilities & achievements:</p>
+                        <ul>
+                            <% resume.experience1.split("\n").forEach(line => { %>
+                                <% if (line.trim().length>0){ %>
+                                    <li><%= line.trim() %></li>
+                                <% } %>
+                            <% }) %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <% if (resume.experience2) { %>
+                    <div class="t9-exp-block">
+                        <p class="t9-exp-title">Experience 2</p>
+                        <p class="t9-exp-meta">Key responsibilities & achievements:</p>
+                        <ul>
+                            <% resume.experience2.split("\n").forEach(line => { %>
+                                <% if (line.trim().length>0){ %>
+                                    <li><%= line.trim() %></li>
+                                <% } %>
+                            <% }) %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <% if (resume.experience3) { %>
+                    <div class="t9-exp-block">
+                        <p class="t9-exp-title">Experience 3</p>
+                        <p class="t9-exp-meta">Key responsibilities & achievements:</p>
+                        <ul>
+                            <% resume.experience3.split("\n").forEach(line => { %>
+                                <% if (line.trim().length>0){ %>
+                                    <li><%= line.trim() %></li>
+                                <% } %>
+                            <% }) %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <% if (!resume.experience1 && !resume.experience2 && !resume.experience3) { %>
+                    <p class="t9-cert-text">No experience provided.</p>
+                <% } %>
+
+            </div>
+        </section>
+
+        <!-- PROJECTS / CERTIFICATIONS -->
+        <section>
+            <div class="t9-banner" style="margin-top:22px;">PROJECTS / CERTIFICATIONS</div>
+            <div class="t9-section-content">
+
+                <% if (resume.projects && resume.projects.trim().length > 0) { %>
+
+                    <ul>
+                        <% resume.projects.split("\n").forEach(line => { %>
+                            <% if (line.trim().length > 0) { %>
+                                <li><%= line.trim() %></li>
+                            <% } %>
+                        <% }) %>
+                    </ul>
+
+                <% } else { %>
+
+                    <p class="t9-cert-text">
+                        No projects or certifications listed.
+                    </p>
+
+                <% } %>
+
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<a href="/resume/<%= id %>/download" class="download-button-ui">Download as PDF</a>
+
+</body>
+</html>

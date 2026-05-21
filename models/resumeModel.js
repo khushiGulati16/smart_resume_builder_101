@@ -1,24 +1,44 @@
 const mongoose = require("mongoose");
 
-const resumeSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
-    required: true,
+const resumeSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // ✅ must match mongoose.model("User", userSchema)
+      required: true,
+    },
+
+    name: { type: String, required: true },
+    role: { type: String, required: true },
+    email: { type: String, required: true },
+
+    phone: String,
+    address: String,
+    linkedin: String,
+
+    // ✅ NEW: professional summary
+    summary: String,
+
+    education: String,
+    experience1: String,
+    experience2: String,
+    experience3: String,
+
+    // ✅ NEW: projects / certifications section
+    projects: String,
+
+    skills: String,
+    template: { type: String, required: true, default: "template1" },
   },
-  name: { type: String, required: true },
-  role: { type: String, required: true },
-  email: { type: String, required: true },
-  phone: String,
-  address: String,
-  linkedin: String,
-  education: String,
-  experience1: String,
-  experience2: String,
-  experience3: String,
-  skills: String,
-  template: { type: String, required: true, default: "template1" },
-}, { timestamps: true });
+  { timestamps: true }
+);
+
+// ✅ text index for search (name, role, skills)
+resumeSchema.index({
+  name: "text",
+  role: "text",
+  skills: "text",
+});
 
 const Resume = mongoose.model("resume", resumeSchema);
 
@@ -46,4 +66,20 @@ async function deleteResumeById(resumeId, userId) {
   return result;
 }
 
-module.exports = { Resume, saveResume, fetchResume, fetchUserResumes, deleteResumeById };
+async function updateResumeById(resumeId, userId, updateData) {
+  const result = await Resume.findOneAndUpdate(
+    { _id: resumeId, userId: userId },
+    updateData,
+    { new: true, runValidators: true }
+  );
+  return result;
+}
+
+module.exports = {
+  Resume,
+  saveResume,
+  fetchResume,
+  fetchUserResumes,
+  deleteResumeById,
+  updateResumeById,
+};

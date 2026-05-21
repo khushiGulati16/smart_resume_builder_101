@@ -1,34 +1,49 @@
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 
-const maxAge = 3 * 24 * 60 * 60;
+const maxAge = 3 * 24 * 60 * 60; // 3 days in seconds
 
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: maxAge,
-  });
+// include role in JWT
+const createToken = (user) => {
+  return jwt.sign(
+    { id: user._id, role: user.role },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: maxAge,
+    }
+  );
 };
 
-// Show signup page
+// Common cookie options
+const isProduction = process.env.NODE_ENV === "production";
+
+const cookieOptions = {
+  httpOnly: true,
+  maxAge: maxAge * 1000,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
+};
+
 exports.showSignup = (req, res) => {
   res.render("auth/signup");
 };
 
-// Show login page
 exports.showLogin = (req, res) => {
   res.render("auth/login");
 };
 
-// Handle signup
+// Handle signup (no role selection from UI – defaults to "user")
 exports.signupUser = async (req, res) => {
   const { name, email, password } = req.body;
   try {
-    const user = await User.create({ name, email, password });
-    const token = createToken(user._id);
+    const user = await User.create({ name, email, password }); // role defaults to 'user'
+    const token = createToken(user);
 
-    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+    res.cookie("jwt", token, cookieOptions);
 
-    res.status(201).json({ user: { id: user._id, name: user.name, email: user.email } });
+    res.status(201).json({
+      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+    });
   } catch (err) {
     let errors = { name: "", email: "", password: "" };
 
@@ -47,19 +62,27 @@ exports.signupUser = async (req, res) => {
   }
 };
 
-// Handle login
+// Handle login (now includes role check)
 exports.loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, role } = req.body;
+  let errors = { email: "", password: "", role: "" };
+
   try {
     const user = await User.login(email, password);
-    const token = createToken(user._id);
 
-    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+    // ✅ New: check if selected role matches user's role in DB
+    if (role && role !== user.role) {
+      errors.role = "Selected role does not match this account.";
+      return res.status(400).json({ errors });
+    }
 
-    res.status(200).json({ user: { id: user._id, name: user.name, email: user.email } });
+    const token = createToken(user);
+    res.cookie("jwt", token, cookieOptions);
+
+    res.status(200).json({
+      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+    });
   } catch (err) {
-    let errors = { email: "", password: "" };
-
     if (err.message === "Incorrect email") {
       errors.email = err.message;
     } else if (err.message === "Incorrect password") {

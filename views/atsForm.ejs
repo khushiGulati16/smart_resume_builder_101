@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ATS Score Checker - Smart Resume Builder</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+      --text-light: #f1f5f9;
+      --muted: #cbd5e1;
+      --accent: #6366f1;
+      --accent-glow: #8b5cf6;
+      --card-bg: rgba(30, 41, 59, 0.9);
+      --inner-card-bg: rgba(15, 23, 42, 0.9);
+      --shadow: 0 10px 25px rgba(0,0,0,0.6);
+      --radius: 16px;
+      --font: 'Poppins', 'Segoe UI', sans-serif;
+    }
+
+    body.main-page {
+      font-family: var(--font);
+      background: var(--bg-gradient);
+      color: var(--text-light);
+      padding-top: 80px;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 1rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      box-shadow: var(--shadow);
+      z-index: 1000;
+    }
+
+    .navbar .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .navbar nav a {
+      margin-left: 2rem;
+      font-weight: 500;
+      text-decoration: none;
+      color: var(--text-light);
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .navbar nav a:hover {
+      color: var(--accent);
+    }
+
+    .navbar nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+
+    .navbar nav a:hover::after {
+      width: 100%;
+    }
+
+    .ats-container {
+      max-width: 980px;
+      margin: 2.5rem auto;
+      padding: 2.5rem 2.25rem;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      flex-grow: 1;
+    }
+
+    .ats-container h1 {
+      font-size: 2.3rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, var(--accent), var(--accent-glow));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .ats-container p.subtitle {
+      text-align: center;
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .ats-form {
+      margin-top: 0.5rem;
+    }
+
+    /* step cards */
+    .ats-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+
+    .step-card {
+      background: var(--inner-card-bg);
+      border-radius: 14px;
+      padding: 1.3rem 1.4rem;
+      border: 1px solid rgba(148,163,184,0.4);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .step-number {
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(99,102,241,0.12);
+      color: #a5b4fc;
+    }
+
+    .step-title {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .ats-form label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+    }
+
+    .ats-form select,
+    .ats-form textarea,
+    .ats-form input[type="file"] {
+      width: 100%;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(148,163,184,0.45);
+      border-radius: 8px;
+      color: var(--text-light);
+      padding: 10px 12px;
+      font-size: 0.95rem;
+    }
+
+    .ats-form select:focus,
+    .ats-form textarea:focus,
+    .ats-form input[type="file"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(99,102,241,0.45);
+    }
+
+    .ats-form textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .helper-note {
+      font-size: 0.83rem;
+      color: var(--muted);
+      margin-top: 0.35rem;
+    }
+
+    .error-message {
+      margin-bottom: 1.5rem;
+      color: #fecaca;
+      background: rgba(248, 113, 113, 0.12);
+      border: 1px solid rgba(248, 113, 113, 0.6);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    /* JD section layout */
+    .jd-grid {
+      display: grid;
+      gap: 1.1rem;
+      grid-template-columns: 1fr;
+    }
+
+    .jd-column {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .jd-subtitle {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .ats-form button {
+      margin-top: 1.6rem;
+      background: linear-gradient(45deg, var(--accent), var(--accent-glow));
+      color: #fff;
+      border: none;
+      padding: 14px 26px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 5px 20px rgba(99,102,241,0.5);
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: inline-block;
+    }
+
+    .ats-form button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(139,92,246,0.6);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(15,23,42,0.85);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      margin-top: auto;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    @media (min-width: 900px) {
+      .ats-container {
+        padding: 2.7rem 3rem;
+      }
+
+      .jd-grid {
+        grid-template-columns: 0.9fr 1.3fr;
+      }
+    }
+  </style>
+</head>
+<body class="main-page">
+  <header class="navbar">
+    <a href="/" class="logo">ResumeHub</a>
+    <nav>
+      <% if (user && user.role === 'admin') { %>
+        <a href="/admin">Home</a>
+        <a href="/admin/users">Admin Users</a>
+        <a href="/admin/resumes">Admin Resumes</a>
+        <a href="/ats">ATS Checker</a>
+        <a href="/auth/logout">Logout</a>
+      <% } else { %>
+        <a href="/">Home</a>
+        <a href="/resume/create">Create New</a>
+        <a href="/dashboard">My Resumes</a>
+        <a href="/ats">ATS Checker</a>
+        <a href="/auth/logout">Logout</a>
+      <% } %>
+    </nav>
+  </header>
+
+  <div class="ats-container">
+    <h1>ATS Score Checker</h1>
+    <p class="subtitle">
+      Select one of your resumes or upload a resume file, add the job description (optional),
+      and we’ll calculate an ATS score out of 100.
+    </p>
+
+    <% if (error) { %>
+      <div class="error-message"><%= error %></div>
+    <% } %>
+
+    <form action="/ats" method="POST" class="ats-form" enctype="multipart/form-data">
+      <div class="ats-steps">
+
+        <!-- STEP 1 -->
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-number">1</span>
+            <span class="step-title">Choose one of your resumes (optional)</span>
+          </div>
+
+          <label for="resumeId">Select a resume created in this app</label>
+          <select name="resumeId" id="resumeId">
+            <option value="">-- Select a resume --</option>
+            <% resumes.forEach(r => { %>
+              <option value="<%= r._id %>" <%= preselectedResumeId == String(r._id) ? 'selected' : '' %>>
+                <%= r.name %> - <%= r.role %>
+              </option>
+            <% }) %>
+          </select>
+          <p class="helper-note">
+            If you leave this blank but upload a resume file in step 2, we’ll analyze the uploaded file instead.
+          </p>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-number">2</span>
+            <span class="step-title">Or upload any resume file (optional)</span>
+          </div>
+
+          <label for="resumeFile">Upload resume file</label>
+          <input
+            type="file"
+            name="resumeFile"
+            id="resumeFile"
+            accept=".pdf,.txt"
+          />
+          <p class="helper-note">
+            Supported formats: PDF, TXT (max 2 MB). Use a text-based PDF (not just a scanned image).
+          </p>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-number">3</span>
+            <span class="step-title">Job Description (optional)</span>
+          </div>
+
+          <div class="jd-grid">
+            <!-- JD file column -->
+            <div class="jd-column">
+              <span class="jd-subtitle">3.a Upload JD file (optional)</span>
+              <label for="jdFile">Upload job description as PDF/TXT</label>
+              <input
+                type="file"
+                name="jdFile"
+                id="jdFile"
+                accept=".pdf,.txt"
+              />
+              <p class="helper-note">
+                You can upload the job description file here. We’ll extract the text automatically.
+              </p>
+            </div>
+
+            <!-- JD text column -->
+            <div class="jd-column">
+              <span class="jd-subtitle">3.b Or paste job description (optional)</span>
+              <label for="jobDescription">Paste job description text</label>
+              <textarea
+                name="jobDescription"
+                id="jobDescription"
+                placeholder="(Optional) Paste the job description if you want keyword match based on a specific role."
+              ><%= formData.jobDescription || '' %></textarea>
+              <p class="helper-note">
+                If you leave this empty (and don't upload a JD file), the ATS score will be calculated only from your resume structure, contact details, and length.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit">Calculate ATS Score</button>
+    </form>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2025 Smart Resume Builder. All rights reserved.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= resume.name %> - Resume</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        :root {
+            --accent: #5b4bff;
+            --text-dark: #222222;
+            --muted: #666666;
+            --border-light: #e5e7eb;
+            --font: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        body.template {
+            font-family: var(--font);
+            background: #0f172a;
+            margin: 0;
+            padding-top: 80px; /* navbar space */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Navbar (same family as other pages) */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            z-index: 1000;
+        }
+        .navbar .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #6366f1;
+            text-decoration: none;
+        }
+        .navbar nav a {
+            margin-left: 2rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: #e5e7eb;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .navbar nav a:hover {
+            color: #a5b4fc;
+        }
+        .navbar nav a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 0;
+            height: 2px;
+            background: #6366f1;
+            transition: width 0.3s ease;
+        }
+        .navbar nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Main resume card */
+        .template6-resume {
+            background: #ffffff;
+            color: var(--text-dark);
+            width: 210mm;
+            min-height: 297mm;
+            margin: 40px auto;
+            padding: 40px 55px 50px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+            border-radius: 6px;
+            border-top: 6px solid var(--accent);
+            box-sizing: border-box;
+        }
+
+        .template6-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .template6-header h1 {
+            font-size: 2.4rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 0 0 6px;
+        }
+        .template6-header h2 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--muted);
+            margin: 0;
+        }
+
+        .template6-contact-row {
+            margin-top: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .template6-section {
+            margin-top: 24px;
+        }
+
+        .template6-section-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .template6-divider {
+            width: 100%;
+            height: 2px;
+            background: #111827;
+            margin: 10px 0 14px;
+        }
+
+        .template6-paragraph {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #444444;
+        }
+
+        .template6-edu-block,
+        .template6-exp-block {
+            margin-bottom: 16px;
+        }
+
+        .template6-edu-degree,
+        .template6-exp-role {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .template6-edu-meta,
+        .template6-exp-meta {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 3px;
+        }
+
+        .template6-skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 20px;
+            margin-top: 6px;
+            font-size: 0.9rem;
+        }
+
+        .template6-skill-dot::before {
+            content: "• ";
+        }
+
+        /* Hide UI-only button in PDF / print */
+        .download-button-ui {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 12px 25px;
+            border-radius: 999px;
+            font-weight: 600;
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            box-shadow: 0 5px 20px rgba(99,102,241,0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .download-button-ui:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(139,92,246,0.6);
+        }
+
+        @media print {
+            .navbar,
+            .download-button-ui {
+                display: none !important;
+            }
+            body.template {
+                padding-top: 0;
+                background: #ffffff;
+            }
+            .template6-resume {
+                margin: 0;
+                box-shadow: none;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body class="template template6">
+<header class="navbar">
+    <a href="/" class="logo">ResumeHub</a>
+
+    <nav>
+        <% if (user && user.role === "admin") { %>
+            <a href="/admin">Admin Dashboard</a>
+            <a href="/admin/users">Users</a>
+            <a href="/admin/resumes">All Resumes</a>
+            <a href="/ats">ATS Checker</a>
+            <a href="/auth/logout">Logout</a>
+        <% } else { %>
+            <a href="/">Home</a>
+            <a href="/resume/create">Create New</a>
+            <a href="/dashboard">My Resumes</a>
+            <a href="/ats">ATS Checker</a>
+            <a href="/auth/logout">Logout</a>
+        <% } %>
+    </nav>
+</header>
+
+
+<div class="template6-resume main-resume-container">
+    <!-- HEADER -->
+    <div class="template6-header">
+        <h1><%= resume.name %></h1>
+        <h2><%= resume.role %></h2>
+
+        <div class="template6-contact-row">
+            <% if (resume.phone) { %>
+                <span><%= resume.phone %></span>
+            <% } %>
+            <% if (resume.email) { %>
+                <span><%= resume.email %></span>
+            <% } %>
+            <% if (resume.address) { %>
+                <span><%= resume.address %></span>
+            <% } %>
+            <% if (resume.linkedin) { %>
+                <span><%= resume.linkedin %></span>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- SUMMARY (ATS-friendly, replaces ABOUT ME) -->
+    <div class="template6-section">
+        <div class="template6-section-title">SUMMARY</div>
+        <div class="template6-divider"></div>
+        <p class="template6-paragraph">
+            <% if (resume.summary && resume.summary.trim().length > 0) { %>
+                <%= resume.summary %>
+            <% } else if (resume.skills && resume.skills.trim().length > 0) { %>
+                <%= resume.role %> skilled in <%= resume.skills %>. Focused on delivering high-quality work and continuously improving my professional capabilities.
+            <% } else { %>
+                <%= resume.role %> focused on delivering high-quality work and continuously improving my professional capabilities.
+            <% } %>
+        </p>
+    </div>
+
+    <!-- EDUCATION -->
+    <div class="template6-section">
+        <div class="template6-section-title">EDUCATION</div>
+        <div class="template6-divider"></div>
+        <% if (resume.education && resume.education.trim().length > 0) { %>
+            <div class="template6-edu-block">
+                <p class="template6-edu-degree"><%= resume.education %></p>
+            </div>
+        <% } else { %>
+            <p class="template6-paragraph">Education details not provided.</p>
+        <% } %>
+    </div>
+
+    <!-- WORK EXPERIENCE -->
+    <div class="template6-section">
+        <div class="template6-section-title">WORK EXPERIENCE</div>
+        <div class="template6-divider"></div>
+
+        <% if (resume.experience1) { %>
+            <div class="template6-exp-block">
+                <p class="template6-exp-role">Experience 1</p>
+                <p class="template6-paragraph"><%= resume.experience1 %></p>
+            </div>
+        <% } %>
+
+        <% if (resume.experience2) { %>
+            <div class="template6-exp-block">
+                <p class="template6-exp-role">Experience 2</p>
+                <p class="template6-paragraph"><%= resume.experience2 %></p>
+            </div>
+        <% } %>
+
+        <% if (resume.experience3) { %>
+            <div class="template6-exp-block">
+                <p class="template6-exp-role">Experience 3</p>
+                <p class="template6-paragraph"><%= resume.experience3 %></p>
+            </div>
+        <% } %>
+
+        <% if (!resume.experience1 && !resume.experience2 && !resume.experience3) { %>
+            <p class="template6-paragraph">Work experience details not provided.</p>
+        <% } %>
+    </div>
+
+    <!-- PROJECTS / CERTIFICATIONS -->
+    <% if (resume.projects && resume.projects.trim().length > 0) { %>
+        <div class="template6-section">
+            <div class="template6-section-title">PROJECTS / CERTIFICATIONS</div>
+            <div class="template6-divider"></div>
+            <p class="template6-paragraph"><%= resume.projects %></p>
+        </div>
+    <% } %>
+
+    <!-- SKILLS -->
+    <div class="template6-section">
+        <div class="template6-section-title">SKILLS</div>
+        <div class="template6-divider"></div>
+
+        <% if (resume.skills && resume.skills.trim().length > 0) { %>
+            <div class="template6-skills-list">
+                <% resume.skills.split(",").forEach(skill => { %>
+                    <% if (skill.trim().length > 0) { %>
+                        <span class="template6-skill-dot"><%= skill.trim() %></span>
+                    <% } %>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <p class="template6-paragraph">Skills not specified.</p>
+        <% } %>
+    </div>
+</div>
+
+<a href="/resume/<%= id %>/download" class="download-button-ui">Download as PDF</a>
+</body>
+</html>

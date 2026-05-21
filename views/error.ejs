@@ -4,35 +4,146 @@
     <title>Error - Smart Resume Builder</title>
     <link rel="stylesheet" href="/css/style.css">
     <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+            --text-light: #f1f5f9;
+            --muted: #cbd5e1;
+            --accent: #6366f1;
+            --accent-glow: #8b5cf6;
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --shadow: 0 10px 25px rgba(0,0,0,0.6);
+            --radius: 16px;
+            --font: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        body.auth-page {
+            font-family: var(--font);
+            background: var(--bg-gradient);
+            color: var(--text-light);
+            padding-top: 80px;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar (same style as other pages) */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+        }
+        .navbar .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .navbar nav a {
+            margin-left: 2rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text-light);
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .navbar nav a:hover {
+            color: var(--accent);
+        }
+        .navbar nav a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        .navbar nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Error card */
+        .error-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
         .error-container {
-            max-width: 600px;
+            max-width: 650px;
+            width: 100%;
             margin: auto;
-            padding: 2rem;
+            padding: 2.5rem 2.5rem 2rem;
             background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 1.5rem;
-            box-shadow: var(--shadow-dark);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             text-align: center;
-            color: var(--text-color-light);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(148,163,184,0.3);
         }
         .error-container h1 {
-            color: #ef4444; /* A shade of red for the error title */
-            font-size: 3rem;
+            color: #f97373; /* soft red */
+            font-size: 2.4rem;
+            margin-bottom: 1rem;
         }
         .error-container p {
-            font-size: 1.1rem;
-            opacity: 0.9;
+            font-size: 1rem;
+            color: var(--muted);
+            margin-bottom: 0.75rem;
         }
-        .error-container a {
-            color: var(--text-color-accent);
+        .error-container strong {
+            color: #fee2e2;
+        }
+
+        .error-container .btn {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 12px 24px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            background: linear-gradient(45deg, var(--accent), var(--accent-glow));
+            color: #fff;
+            text-decoration: none;
+            box-shadow: 0 5px 20px rgba(99,102,241,0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .error-container .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(139,92,246,0.6);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 1.5rem 2rem;
+            background: rgba(15,23,42,0.9);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.9rem;
+            color: var(--muted);
         }
     </style>
 </head>
 <body class="auth-page">
     <header class="navbar">
-        <a href="/" class="logo">AppLogo</a>
+        <a href="/" class="logo">ResumeHub</a>
         <nav>
-            <% if (user) { %> <a href="/dashboard">My Resumes</a>
+            <% if (user) { %>
+                <a href="/dashboard">My Resumes</a>
                 <a href="/auth/logout">Logout</a>
             <% } else { %>
                 <a href="/auth/login">Login</a>
@@ -40,13 +151,20 @@
             <% } %>
         </nav>
     </header>
-    <div class="error-container">
-        <h1>Oops! Something went wrong.</h1>
-        <p>We're sorry, but an unexpected error occurred. Please try again later.</p>
-        <% if (message) { %>
-            <p><strong>Error Details:</strong> <%= message %></p>
-        <% } %>
-        <a href="/auth/login" class="btn">Go to Login Page</a>
+
+    <div class="error-wrapper">
+        <div class="error-container">
+            <h1>Oops! Something went wrong.</h1>
+            <p>We're sorry, but an unexpected error occurred. Please try again later.</p>
+            <% if (message) { %>
+                <p><strong>Error Details:</strong> <%= message %></p>
+            <% } %>
+            <a href="/auth/login" class="btn">Go to Login Page</a>
+        </div>
     </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Smart Resume Builder. All rights reserved.</p>
+    </footer>
 </body>
 </html>

@@ -4,11 +4,10 @@
     <title>Smart Resume Builder</title>
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        /* ===== Dark + Gradient Theme Redesign ===== */
         :root {
             --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
             --text-light: #f1f5f9;
-            --muted: #cbd5e1; /* lighter gray for readability */
+            --muted: #cbd5e1;
             --accent: #6366f1;
             --accent-glow: #8b5cf6;
             --card-bg: rgba(30, 41, 59, 0.7);
@@ -25,7 +24,6 @@
             margin: 0;
         }
 
-        /* Navbar */
         .navbar {
             position: fixed;
             top: 0;
@@ -71,7 +69,6 @@
             width: 100%;
         }
 
-        /* Hero Section */
         .hero-section {
             display: flex;
             justify-content: center;
@@ -112,7 +109,6 @@
             box-shadow: 0 15px 35px rgba(139,92,246,0.6);
         }
 
-        /* Section Headings */
         .section-heading {
             text-align: center;
             font-size: clamp(2rem, 4vw, 2.8rem);
@@ -123,7 +119,6 @@
             margin-bottom: 3.5rem;
         }
 
-        /* Features */
         .features-section {
             padding: 6rem 2rem;
         }
@@ -155,14 +150,13 @@
             font-size: 1.4rem;
             font-weight: 600;
             margin-bottom: 0.6rem;
-            color: #f8fafc; /* Bright white */
+            color: #f8fafc;
         }
         .feature-card p {
-            color: #cbd5e1; /* Light gray for readability */
+            color: #cbd5e1;
             font-size: 1rem;
         }
 
-        /* Testimonials */
         .testimonials-section {
             padding: 6rem 2rem;
             background: linear-gradient(135deg, #111827, #1f2937);
@@ -198,7 +192,6 @@
             color: var(--accent);
         }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding: 2rem;
@@ -208,22 +201,33 @@
             font-size: 0.95rem;
             color: var(--muted);
         }
+
+        #online-users-banner {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
     </style>
 </head>
 <body class="main-page">
-    <header class="navbar">
-        <a href="/" class="logo">SmartResume</a>
-        <nav>
-            <% if (user) { %>
-                <a href="/resume/create">Create New</a>
-                <a href="/dashboard">My Resumes</a>
-                <a href="/auth/logout">Logout</a>
-            <% } else { %>
-                <a href="/auth/login">Login</a>
-                <a href="/auth/signup">Sign Up</a>
-            <% } %>
-        </nav>
-    </header>
+<header class="navbar">
+    <a href="/" class="logo">ResumeHub</a>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/resume/create">Create New</a>
+        <a href="/dashboard">My Resumes</a>
+        <a href="/ats">ATS Checker</a>
+        <a href="/auth/logout">Logout</a>
+    </nav>
+</header>
+
+
+
+    <div id="online-users-banner">
+        Online users right now: <span id="online-count">0</span>
+    </div>
 
     <section class="hero-section">
         <h1 class="hero-headline">Create Resumes that Get You Hired 🚀</h1>
@@ -269,5 +273,14 @@
     <footer class="footer">
         <p>&copy; 2025 Smart Resume Builder. All rights reserved.</p>
     </footer>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      socket.on("online:count", (count) => {
+        const span = document.getElementById("online-count");
+        if (span) span.textContent = count;
+      });
+    </script>
 </body>
 </html>

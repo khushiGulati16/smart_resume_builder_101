@@ -15,7 +15,7 @@
             --radius: 16px;
             --font: 'Poppins', 'Segoe UI', sans-serif;
         }
-        
+
         body.auth-page {
             font-family: var(--font);
             background: var(--bg-gradient);
@@ -108,7 +108,8 @@
             font-weight: 500;
             color: var(--muted);
         }
-        .input-group input {
+        .input-group input,
+        .input-group select {
             width: 100%;
             padding: 12px 15px;
             background: rgba(255, 255, 255, 0.05);
@@ -118,7 +119,8 @@
             font-size: 1rem;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
-        .input-group input:focus {
+        .input-group input:focus,
+        .input-group select:focus {
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
@@ -161,7 +163,6 @@
             color: var(--accent-glow);
         }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding: 2rem;
@@ -175,62 +176,116 @@
     </style>
 </head>
 <body class="auth-page">
-    <header class="navbar">
-        <a href="/" class="logo">SmartResume</a>
-        <nav>
-            <% if (user) { %>
-                <a href="/dashboard">My Resumes</a>
-                <a href="/auth/logout">Logout</a>
-            <% } else { %>
-                <a href="/auth/login">Login</a>
-                <a href="/auth/signup">Sign Up</a>
-            <% } %>
-        </nav>
-    </header>
+   <header class="navbar">
+    <a href="/" class="logo">ResumeHub</a>
+
+    <nav>
+        <a href="/auth/login">Login</a>
+        <a href="/auth/signup">Sign Up</a>
+    </nav>
+</header>
 
     <div class="auth-container">
         <h1>Login to Your Account</h1>
-        <form id="login-form">
+        <form id="login-form" autocomplete="off">
             <div class="input-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" style="background-color: #0f172a;" required>
                 <div class="error" id="email-error"></div>
             </div>
             <div class="input-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+                   <input
+      type="password"
+      id="password"
+      name="password"
+      required
+      autocomplete="new-password"
+      spellcheck="false"
+       style="background-color: #0f172a;"
+    >
                 <div class="error" id="password-error"></div>
+            </div>
+            <div class="input-group">
+                <label for="role">Login as</label>
+                <select id="role" name="role" style="background-color: #0f172a;" required>
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <div class="error" id="role-error"></div>
             </div>
             <button type="submit">Login</button>
             <p>Don't have an account? <a href="/auth/signup">Sign up here</a></p>
         </form>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-        const form = document.querySelector('form');
+        // Use explicit id selector to avoid ambiguity
+        const form = document.getElementById('login-form');
         const emailError = document.getElementById('email-error');
         const passwordError = document.getElementById('password-error');
+        const roleError = document.getElementById('role-error');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            // Reset errors
             emailError.textContent = '';
             passwordError.textContent = '';
+            roleError.textContent = '';
 
-            const email = form.email.value;
+            const email = form.email.value.trim();
             const password = form.password.value;
+            const role = form.role.value;
 
             try {
-                const { data } = await axios.post('/auth/login', { email, password });
-                if (data.errors) {
-                    emailError.textContent = data.errors.email;
-                    passwordError.textContent = data.errors.password;
+                const res = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, role })
+                });
+
+                // parse JSON safely
+                let data = {};
+                try {
+                    data = await res.json();
+                } catch (parseErr) {
+                    console.error('Failed to parse JSON response', parseErr);
                 }
-                if (data.user) {
-                    location.href = '/';
+
+                if (!res.ok) {
+                    // handle validation errors returned as { errors: { email, password, role } }
+                    if (data && data.errors) {
+                        emailError.textContent = data.errors.email || '';
+                        passwordError.textContent = data.errors.password || '';
+                        roleError.textContent = data.errors.role || '';
+                    } else if (data && data.message) {
+                        // generic error message
+                        passwordError.textContent = data.message;
+                    } else {
+                        passwordError.textContent = 'Login failed. Please try again.';
+                    }
+                    return;
+                }
+
+                // successful login — server should return { user: { id, name, email, role } }
+                if (data && data.user) {
+                    const userRole = data.user.role || 'user';
+
+                    // Redirect admins to admin dashboard, others to main app
+                    if (userRole === 'admin') {
+                        window.location.href = '/admin';
+                    } else {
+                        // you can send them to dashboard or home as per your route setup
+                        window.location.href = '/';
+                    }
+                } else {
+                    // fallback: go home
+                    window.location.href = '/';
                 }
             } catch (err) {
-                console.log(err);
+                console.error('Login error:', err);
+                passwordError.textContent = 'Network error. Try again later.';
             }
         });
     </script>

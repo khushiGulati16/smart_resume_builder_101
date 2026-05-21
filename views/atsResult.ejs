@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ATS Score Result - Smart Resume Builder</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+      --text-light: #f1f5f9;
+      --muted: #cbd5e1;
+      --accent: #6366f1;
+      --accent-glow: #8b5cf6;
+      --card-bg: rgba(30, 41, 59, 0.9);
+      --shadow: 0 10px 25px rgba(0,0,0,0.6);
+      --radius: 16px;
+      --font: 'Poppins', 'Segoe UI', sans-serif;
+    }
+
+    body.main-page {
+      font-family: var(--font);
+      background: var(--bg-gradient);
+      color: var(--text-light);
+      padding-top: 80px;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 1rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      box-shadow: var(--shadow);
+      z-index: 1000;
+    }
+
+    .navbar .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .navbar nav a {
+      margin-left: 2rem;
+      font-weight: 500;
+      text-decoration: none;
+      color: var(--text-light);
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .navbar nav a:hover {
+      color: var(--accent);
+    }
+
+    .navbar nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+
+    .navbar nav a:hover::after {
+      width: 100%;
+    }
+
+    .ats-result-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      flex-grow: 1;
+    }
+
+    .score-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .score-header h1 {
+      font-size: 2.4rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, var(--accent), var(--accent-glow));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .score-badge {
+      display: inline-block;
+      margin-top: 0.5rem;
+      padding: 0.5rem 1.3rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      background: rgba(22, 163, 74, 0.2);
+      color: #bbf7d0;
+    }
+
+    .score-badge.medium {
+      background: rgba(245, 158, 11, 0.25);
+      color: #fed7aa;
+    }
+
+    .score-badge.low {
+      background: rgba(239, 68, 68, 0.25);
+      color: #fecaca;
+    }
+
+    .breakdown-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .breakdown-card {
+      background: rgba(15,23,42,0.9);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      font-size: 0.95rem;
+    }
+
+    .breakdown-card h2 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: #e5e7eb;
+    }
+
+    .breakdown-card p {
+      margin: 0.25rem 0;
+      color: var(--muted);
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(148,163,184,0.2);
+      color: #e5e7eb;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      margin: 2px;
+    }
+
+    .badge.missing {
+      background: rgba(248,113,113,0.2);
+      color: #fecaca;
+    }
+
+    .badge.matched {
+      background: rgba(34,197,94,0.2);
+      color: #bbf7d0;
+    }
+
+    .raw-text-section {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .raw-block {
+      background: rgba(15,23,42,0.9);
+      border-radius: 12px;
+      padding: 1.2rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      white-space: pre-wrap;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .raw-block h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      color: #e5e7eb;
+    }
+
+    .actions {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    .actions a.btn {
+      display: inline-block;
+      padding: 10px 22px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin: 0 0.5rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, var(--accent), var(--accent-glow));
+      color: #fff;
+      box-shadow: 0 5px 18px rgba(99,102,241,0.5);
+    }
+
+    .btn-secondary {
+      background: rgba(15,23,42,0.9);
+      color: var(--muted);
+      border: 1px solid rgba(148,163,184,0.5);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(15,23,42,0.85);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      margin-top: auto;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body class="main-page">
+  <header class="navbar">
+    <a href="/" class="logo">ResumeHub</a>
+    <nav>
+      <% if (user && user.role === 'admin') { %>
+        <a href="/admin">Home</a>
+        <a href="/admin/users">Admin Users</a>
+        <a href="/admin/resumes">Admin Resumes</a>
+        <a href="/ats">ATS Checker</a>
+        <a href="/auth/logout">Logout</a>
+      <% } else { %>
+        <a href="/">Home</a>
+        <a href="/resume/create">Create New</a>
+        <a href="/dashboard">My Resumes</a>
+        <a href="/ats">ATS Checker</a>
+        <a href="/auth/logout">Logout</a>
+      <% } %>
+    </nav>
+  </header>
+
+  <div class="ats-result-container">
+    <div class="score-header">
+      <h1>Your ATS Score</h1>
+      <% const score = result.totalScore;
+         let scoreClass = "";
+         if (score >= 75) scoreClass = "";
+         else if (score >= 50) scoreClass = "medium";
+         else scoreClass = "low";
+      %>
+      <div class="score-badge <%= scoreClass %>">
+        <%= score %> / 100
+      </div>
+      <p style="margin-top:0.5rem; color: var(--muted); font-size: 0.9rem;">
+        <% if (result.hasJD) { %>
+          This score is based on keyword match, section completeness, contact information, length, and skill relevance against the job description.
+        <% } else { %>
+          This score is based on your resume structure, important sections, contact information, and length. No job description was provided, so keyword matching is skipped.
+        <% } %>
+      </p>
+    </div>
+
+    <div class="breakdown-grid">
+      <div class="breakdown-card">
+        <h2>Keywords Match (max 40)</h2>
+        <% if (result.hasJD) { %>
+          <p>Score: <strong><%= result.breakdown.keywords.score %></strong></p>
+          <p>Matched keywords:</p>
+          <div>
+            <% if (result.breakdown.keywords.matched.length === 0) { %>
+              <span class="badge missing">No strong keyword matches</span>
+            <% } else { %>
+              <% result.breakdown.keywords.matched.slice(0, 25).forEach(k => { %>
+                <span class="badge matched"><%= k %></span>
+              <% }) %>
+            <% } %>
+          </div>
+          <% if (result.breakdown.keywords.missing.length > 0) { %>
+            <p style="margin-top:0.5rem;">Missing important keywords:</p>
+            <div>
+              <% result.breakdown.keywords.missing.slice(0, 25).forEach(k => { %>
+                <span class="badge missing"><%= k %></span>
+              <% }) %>
+            </div>
+          <% } %>
+        <% } else { %>
+          <p style="color: var(--muted);">
+            No job description was provided, so keyword match is not calculated.
+            The total score is derived from your resume sections, contact details, and length.
+          </p>
+        <% } %>
+      </div>
+
+      <div class="breakdown-card">
+        <h2>Sections (max 25)</h2>
+        <p>Score: <strong><%= result.breakdown.sections.score %></strong></p>
+        <p>
+          <span class="badge <%= result.breakdown.sections.found.summary ? 'matched' : 'missing' %>">
+            Summary / Objective
+          </span>
+          <span class="badge <%= result.breakdown.sections.found.skills ? 'matched' : 'missing' %>">
+            Skills
+          </span>
+          <span class="badge <%= result.breakdown.sections.found.experience ? 'matched' : 'missing' %>">
+            Experience
+          </span>
+          <span class="badge <%= result.breakdown.sections.found.education ? 'matched' : 'missing' %>">
+            Education
+          </span>
+          <span class="badge <%= result.breakdown.sections.found.projects ? 'matched' : 'missing' %>">
+            Projects / Certifications
+          </span>
+        </p>
+      </div>
+
+      <div class="breakdown-card">
+        <h2>Contact & Links (max 15)</h2>
+        <p>Score: <strong><%= result.breakdown.contact.score %></strong></p>
+        <p>
+          <span class="badge <%= result.breakdown.contact.hasEmail ? 'matched' : 'missing' %>">Email</span>
+          <span class="badge <%= result.breakdown.contact.hasPhone ? 'matched' : 'missing' %>">Phone</span>
+          <span class="badge <%= result.breakdown.contact.hasLinkedIn ? 'matched' : 'missing' %>">LinkedIn</span>
+        </p>
+      </div>
+
+      <div class="breakdown-card">
+        <h2>Length & Skills (max 20)</h2>
+        <p>Length score: <strong><%= result.breakdown.length.score %></strong></p>
+        <p>Word count: <strong><%= result.breakdown.length.wordCount %></strong></p>
+        <p style="margin-top:0.5rem;">
+          Skill relevance score: <strong><%= result.breakdown.skillDensity.score %></strong>
+        </p>
+      </div>
+    </div>
+
+    <div class="raw-text-section">
+      <% if (jobDescription && jobDescription.trim().length > 0) { %>
+        <div class="raw-block">
+          <h3>Job Description</h3>
+          <pre><%= jobDescription %></pre>
+        </div>
+      <% } %>
+      <div class="raw-block">
+        <h3>Analyzed Resume Text</h3>
+        <pre><%= resumeText %></pre>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a href="/ats" class="btn btn-secondary">Check another resume</a>
+      <% if (user && user.role === 'admin') { %>
+        <a href="/admin" class="btn btn-primary">Back to Admin Dashboard</a>
+      <% } else { %>
+        <a href="/dashboard" class="btn btn-primary">Back to Dashboard</a>
+      <% } %>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2025 Smart Resume Builder. All rights reserved.</p>
+  </footer>
+</body>
+</html>
